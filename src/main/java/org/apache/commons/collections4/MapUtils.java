@@ -223,22 +223,32 @@ public class MapUtils {
      * @return the value in the Map as a Boolean, {@code null} if null map input
      */
     public static <K> Boolean getBoolean(final Map<? super K, ?> map, final K key) {
-        if (map != null) {
-            final Object answer = map.get(key);
-            if (answer != null) {
-                if (answer instanceof Boolean) {
-                    return (Boolean) answer;
-                }
-                if (answer instanceof String) {
-                    return Boolean.valueOf((String) answer);
-                }
-                if (answer instanceof Number) {
-                    final Number n = (Number) answer;
-                    return n.intValue() != 0 ? Boolean.TRUE : Boolean.FALSE;
-                }
-            }
+        if (map == null) {
+            return null;
         }
-        return null;
+    
+        final Object answer = map.get(key);
+    
+        if (answer == null) {
+            return null;
+        }
+    
+        switch (answer.getClass().getSimpleName()) {
+            case "Boolean":
+                return (Boolean) answer;
+            case "String":
+                return Boolean.valueOf((String) answer);
+            case "Number":
+                final Number n = (Number) answer;
+                return n.intValue() != 0 ? Boolean.TRUE : Boolean.FALSE;
+            default:
+                // Handle additional types or subtypes here
+                // if(answer instanceof AnotherType) { // handle AnotherType }
+                // else if(answer instanceof YetAnotherType) { // handle YetAnotherType }
+                // ...
+    
+                return null; // if type is not handled above, return null
+        }
     }
 
     /**
